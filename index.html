@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box,
+      .box2,
+      .box3 {
+        height: 1000px;
+        background-color: chocolate;
+      }
+      .box2 {
+        background-color: cornflowerblue;
+      }
+      .box3 {
+        background-color: lightgreen;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Demonstration of how to make request when that div is in view</h1>
+    <div>Suppose you got data for 3</div>
+    <div id="container">
+      <div data-id="1" class="box"></div>
+      <div data-id="2" class="box2"></div>
+      <div data-id="3" class="box3"></div>
+    </div>
+
+    <script>
+      // define an observer instance
+      var observer = new IntersectionObserver(onIntersection, {
+        root: null, // default is the viewport
+        threshold: 0.5, // percentage of taregt's visible area. Triggers "onIntersection"
+      });
+
+      // callback is called on intersection change
+      function onIntersection(entries, opts) {
+        entries.forEach((entry) => {
+          if (entry.target.dataset.id == 1) {
+            entry.target.style.fontSize = "48px";
+            fetch("http://localhost/comments/user/?id=" + 1)
+              .then((res) => res.json())
+              .then(({ data }) => (entry.target.innerHTML = `${data[0].name}`));
+          } else if (entry.target.dataset.id == 2) {
+            entry.target.style.fontSize = "48px";
+            fetch("http://localhost/comments/user/?id=" + 2)
+              .then((res) => res.json())
+              .then(({ data }) => (entry.target.innerHTML = `${data[0].name}`));
+          } else {
+            entry.target.style.fontSize = "48px";
+            fetch("http://localhost/comments/user/?id=" + 3)
+              .then((res) => res.json())
+              .then(({ data }) => (entry.target.innerHTML = `${data[0].name}`));
+          }
+        });
+      }
+
+      // Use the observer to observe an element
+      observer.observe(document.querySelector(".box"));
+      observer.observe(document.querySelector(".box2"));
+      observer.observe(document.querySelector(".box3"));
+    </script>
+  </body>
+</html>
